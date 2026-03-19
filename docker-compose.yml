@@ -25,6 +25,7 @@ services:
       GIT_USER: ${GIT_USER:-TestUser}
       GIT_EMAIL: ${GIT_EMAIL:-test@example.com}
       OP_SERVICE_ACCOUNT_TOKEN: ${OP_SERVICE_ACCOUNT_TOKEN:-}
+      TZ: Pacific/Auckland
     volumes:
       # FOLDER must be defined in .env file, e.g. FOLDER=/home/user
       # or provided as an environment variable when running docker compose,
