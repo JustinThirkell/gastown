@@ -21,7 +21,6 @@ RUN apt-get update && apt-get install -y \
     netcat-openbsd \
     tini \
     vim \
-    gosu \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Install Go from official tarball (apt golang-go is too old)
@@ -34,7 +33,7 @@ RUN curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/i
 RUN curl -fsSL https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash
 
 # Set up directories
-RUN mkdir -p /app /gt && chown agent:agent /app /gt
+RUN mkdir -p /app /gt /gt/.dolt-data && chown -R agent:agent /app /gt
 
 # Environment setup for bash and zsh
 RUN echo 'export PATH="/app/gastown:$PATH"' >> /etc/profile.d/gastown.sh && \
@@ -100,7 +99,5 @@ RUN chmod +x /app/docker-entrypoint.sh
 
 WORKDIR /gt
 
-# Entrypoint runs as root to fix volume ownership, then drops to agent via gosu
-USER root
 ENTRYPOINT ["tini", "--", "/app/docker-entrypoint.sh"]
 CMD ["sleep", "infinity"]
