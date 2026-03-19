@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     netcat-openbsd \
     tini \
     vim \
+    gosu \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Install Go from official tarball (apt golang-go is too old)
@@ -99,5 +100,7 @@ RUN chmod +x /app/docker-entrypoint.sh
 
 WORKDIR /gt
 
+# Entrypoint runs as root to fix volume ownership, then drops to agent via gosu
+USER root
 ENTRYPOINT ["tini", "--", "/app/docker-entrypoint.sh"]
 CMD ["sleep", "infinity"]
