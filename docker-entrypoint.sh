@@ -1,6 +1,15 @@
 #!/bin/sh
 set -e
 
+# When running as root: fix volume ownership, then re-exec as agent.
+if [ "$(id -u)" = "0" ]; then
+    # Docker named volumes are created as root. Dolt needs agent ownership.
+    chown agent:agent /gt/.dolt-data
+    exec gosu agent "$0" "$@"
+fi
+
+# --- Everything below runs as agent ---
+
 # Re-apply git/dolt config on every start so env var changes take effect
 # even when the home volume already exists from a previous run.
 if [ -n "$GIT_USER" ] && [ -n "$GIT_EMAIL" ]; then
